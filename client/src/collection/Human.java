@@ -1,0 +1,41 @@
+package collection;
+
+import java.io.Serializable;
+
+public class Human implements Comparable, Serializable {
+    private String name; //Поле не может быть null, Строка не может быть пустой
+    private int age; //Значение поля должно быть больше 0
+    private Double height; //Значение поля должно быть больше 0
+    private static final long serialVersionUID=20020829L;
+
+    public Human(String name, int age, Double height) {
+        this.name = name;
+        this.age = age;
+        this.height = height;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == null) {
+            return -1;
+        }
+        if (!(o instanceof Human)) {
+            throw new ClassCastException();
+        }
+        Human h = (Human) o;
+        return (this.age - h.getAge());
+    }
+}
+
