@@ -32,6 +32,7 @@ public class ClientHandler {
     }
 
     public TransferObject readRequest(SocketChannel channel) throws IOException, ClassNotFoundException {
+
         return RequestHandler.readRequest(channel);
     }
 

@@ -1,5 +1,7 @@
 package collection;
 
+import exceptions.InvalidFieldException;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -38,6 +40,7 @@ public class City implements Comparable, Serializable {
         this.government=government;
         this.standardOfLiving=standardOfLiving;
         this.governor=governor;
+        checkFields();
     }
 
 
@@ -87,6 +90,30 @@ public class City implements Comparable, Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    private void checkFields(){
+        if (name==null||name.isEmpty()){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле name");
+        }
+        if (coordinates==null){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле coordinates");
+        }
+        if (area<0){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле area");
+        }
+        if (population <= 0){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле population");
+        }
+        if(metersAboveSeaLevel==null){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле metersAboveSeaLevel");
+        }
+        if (government==null){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле government");
+        }
+        if (governor==null){
+            throw new InvalidFieldException("Ошибка в поле объекта: поле governor");
+        }
     }
 
     @Override

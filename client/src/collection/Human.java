@@ -1,5 +1,7 @@
 package collection;
 
+import exceptions.InvalidFieldException;
+
 import java.io.Serializable;
 
 public class Human implements Comparable, Serializable {
@@ -12,6 +14,7 @@ public class Human implements Comparable, Serializable {
         this.name = name;
         this.age = age;
         this.height = height;
+        checkFields();
     }
 
     public String getName() {
@@ -24,6 +27,18 @@ public class Human implements Comparable, Serializable {
 
     public Double getHeight() {
         return height;
+    }
+
+    private void checkFields() {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidFieldException("Ошибка в исходном файле Json: поле governor.name");
+        }
+        if (age <= 0) {
+            throw new InvalidFieldException("Ошибка в исходном файле Json: поле governor.age");
+        }
+        if (height <= 0) {
+            throw new InvalidFieldException("Ошибка в исходном файле Json: поле governor.height");
+        }
     }
 
     @Override

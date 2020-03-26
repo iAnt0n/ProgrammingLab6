@@ -1,5 +1,7 @@
 package collection;
 
+import exceptions.InvalidFieldException;
+
 import java.io.Serializable;
 
 public class Coordinates implements Serializable {
@@ -10,6 +12,7 @@ public class Coordinates implements Serializable {
     public Coordinates(Integer x, Double y){
         this.x = x;
         this.y = y;
+        checkFields();
     }
 
     public Double getY() {
@@ -26,6 +29,15 @@ public class Coordinates implements Serializable {
 
     public void setY(Double y) {
         this.y = y;
+    }
+
+    private void checkFields(){
+        if (x<=-773){
+            throw new InvalidFieldException("Ошибка в исходном файле Json: поле coordinates.x");
+        }
+        if (y>=664){
+            throw new InvalidFieldException("Ошибка в исходном файле Json: поле coordinates.y");
+        }
     }
 
 }

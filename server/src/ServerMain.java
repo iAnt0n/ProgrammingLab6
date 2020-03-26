@@ -4,11 +4,11 @@ import collection.CollectionManager;
 import commands.CommandInvoker;
 import communication.ClientHandler;
 import communication.TransferObject;
+import exceptions.ConnectionCancelledException;
 import utils.JsonReader;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
+import java.net.SocketAddress;
 import java.nio.channels.*;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -16,14 +16,13 @@ import java.util.logging.*;
 
 public class ServerMain {
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {//TODO модули
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         final int PORT = 1984;
 
         Logger log = Logger.getLogger(ServerMain.class.getName());
         JsonReader jr = new JsonReader();
         CommandInvoker ci = new CommandInvoker();
         CityCollection collection;
-        String response = "sample response";
 
         if (args.length > 0) {
             try {
@@ -62,13 +61,24 @@ public class ServerMain {
                     ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
                     clientHandler.acceptConnection();
                 }
-                else if (key.isReadable()) {
+                if (key.isReadable()) {
                     SocketChannel channel = (SocketChannel) key.channel();
-                    TransferObject TO = clientHandler.readRequest(channel);
-                    clientHandler.response = ci.executeCommand(cm, TO) + "\n";
-                    key.interestOps(SelectionKey.OP_WRITE);
+                    try {
+                        TransferObject TO = clientHandler.readRequest(channel);
+                        if (TO.getName().equals("exit")){
+                            SocketAddress clientAddr = channel.getRemoteAddress();
+                            channel.close();
+                            log.info("Разорвано соединение с клиентом "+clientAddr);
+                            continue;
+                        }
+                        clientHandler.response = ci.executeCommand(cm, TO) + "\n";
+                        key.interestOps(SelectionKey.OP_WRITE);
+                    }
+                    catch (ConnectionCancelledException e){
+                        continue;
+                    }
                 }
-                else if (key.isWritable()) {
+                if (key.isWritable()) {
                     SocketChannel channel = (SocketChannel) key.channel();
                     clientHandler.sendResponse(channel);
                     key.interestOps(SelectionKey.OP_READ);

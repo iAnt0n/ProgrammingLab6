@@ -86,6 +86,7 @@ public class City implements Comparable, Serializable {
         this.standardOfLiving=standardOfLiving;
         this.governor=governor;
         this.creationDate = LocalDateTime.now();
+        checkFields();
     }
 
 

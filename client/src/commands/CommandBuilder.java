@@ -5,6 +5,7 @@ import exceptions.InvalidArgumentsException;
 import utils.UserInterface;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -12,6 +13,14 @@ import java.util.HashMap;
  * Класс, служащий для построения объекта TransferObject на основе введеной команды
  */
 public class CommandBuilder {
+    private static CommandBuilder instance;
+
+    public static CommandBuilder getInstance() {
+        if (instance == null) {
+            instance = new CommandBuilder();
+        }
+        return instance;
+    }
     private HashMap<String, Command> commands = new HashMap<>();
 
     public CommandBuilder(){
@@ -30,6 +39,7 @@ public class CommandBuilder {
         addCmd(new MaxByStandardOfLivingCommand());
         addCmd(new ExecuteScriptCommand());
         addCmd(new HelpCommand());
+        addCmd(new ExitCommand());
     }
 
     private void addCmd(Command cmd){
@@ -41,15 +51,22 @@ public class CommandBuilder {
      * @param ui интерфейс, служащий для взаимодействия с пользователем
      * @param s строка, на основе которой строится объект
      * @return объект типа {@link TransferObject}
-     * @throws IOException при ошибке, которая может произойти, если команда работает с потоками ввода-вывода
      */
-    public TransferObject buildCommand(UserInterface ui, String s) throws IOException {
+    public Object[] buildCommand(UserInterface ui, String s) {
         String[] input = s.trim().split("\\s+");
         String[] simpleArgs = Arrays.copyOfRange(input, 1, input.length);
         Command cmd = commands.get(input[0].toLowerCase());
         if (cmd.getSimpleArgLen() != simpleArgs.length){
             throw new InvalidArgumentsException("Неверные аргументы команды");
         }
-        return new TransferObject(cmd.getName(), simpleArgs, cmd.buildArgs(ui, simpleArgs));
+        if (cmd.name.equals("execute_script")){
+            try {
+                return ((ArrayList) cmd.buildArgs(ui, simpleArgs)).toArray();
+            }
+            catch (NullPointerException e){
+                throw new InvalidArgumentsException("Не удается открыть файл скрипта");
+            }
+        }
+        else return new Object[] {new TransferObject(cmd.getName(), simpleArgs, cmd.buildArgs(ui, simpleArgs))};
     }
 }

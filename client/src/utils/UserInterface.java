@@ -283,4 +283,7 @@ public class UserInterface {
         return scanner.nextLine();
     }
 
+    public String read(){
+        return scanner.nextLine();
+    }
 }
