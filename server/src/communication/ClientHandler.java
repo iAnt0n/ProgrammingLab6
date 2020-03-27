@@ -1,6 +1,7 @@
 package communication;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -16,11 +17,12 @@ public class ClientHandler {
     public ClientHandler(int port) throws IOException {
         Logger log = Logger.getLogger(ClientHandler.class.getName());
         this.server = ServerSocketChannel.open();
-        server.socket().bind(new InetSocketAddress(port));
+        InetSocketAddress address = new InetSocketAddress(port);
+        server.socket().bind(address);
         server.configureBlocking(false);
         this.selector = Selector.open();
         server.register(selector, SelectionKey.OP_ACCEPT);
-        log.info("Сервер запущен, прослушивает порт "+port+". Ожидание подключений");
+        log.info("Сервер запущен: IP "+ InetAddress.getLocalHost().getHostAddress() +" Port "+port+". Ожидание подключений");
     }
 
     public Selector getSelector() {
@@ -32,7 +34,6 @@ public class ClientHandler {
     }
 
     public TransferObject readRequest(SocketChannel channel) throws IOException, ClassNotFoundException {
-
         return RequestHandler.readRequest(channel);
     }
 

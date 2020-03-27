@@ -65,12 +65,6 @@ public class ServerMain {
                     SocketChannel channel = (SocketChannel) key.channel();
                     try {
                         TransferObject TO = clientHandler.readRequest(channel);
-                        if (TO.getName().equals("exit")){
-                            SocketAddress clientAddr = channel.getRemoteAddress();
-                            channel.close();
-                            log.info("Разорвано соединение с клиентом "+clientAddr);
-                            continue;
-                        }
                         clientHandler.response = ci.executeCommand(cm, TO) + "\n";
                         key.interestOps(SelectionKey.OP_WRITE);
                     }

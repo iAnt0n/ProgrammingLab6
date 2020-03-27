@@ -8,9 +8,8 @@ import java.io.*;
 
 public class ClientMain {
     public static void main(String[] args) {
-        UserInterface ui = new UserInterface(
-                new InputStreamReader(System.in),
-                new OutputStreamWriter(System.out), true);
+        UserInterface ui = new UserInterface(new InputStreamReader(System.in),
+                                             new OutputStreamWriter(System.out), true);
         CommandBuilder cb = new CommandBuilder();
         Connector connector = null;
         try {

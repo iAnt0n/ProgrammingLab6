@@ -16,17 +16,17 @@ public class RequestHandler {
         ByteBuffer bb = ByteBuffer.allocate(5 * 1024);
         try {
             channel.read(bb);
+            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bb.array()))) {
+                TransferObject TO = (TransferObject) ois.readObject();
+                log.info("Получены данные от клиента "+channel.getRemoteAddress());
+                return TO;
+            }
         }
         catch (IOException e){
             SocketAddress clientAddr = channel.getRemoteAddress();
             channel.close();
             log.info("Разорвано соединение с клиентом "+clientAddr);
             throw new ConnectionCancelledException("Соединение принудительно разорвано");
-        }
-        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bb.array()))) {
-            TransferObject TO = (TransferObject) ois.readObject();
-            log.info("Получены данные от клиента "+channel.getRemoteAddress());
-            return TO;
         }
     }
 }
