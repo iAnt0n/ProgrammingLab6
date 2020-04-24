@@ -125,8 +125,9 @@ public class CollectionManager {
     /**
      * Выводит один из элементов с наименьшим значениемь поля population
      * @return строковое представление элемента коллекции
+     * @throws NoSuchElementException если коллекция пуста
      */
-    public String minByPopulation(){
+    public String minByPopulation() throws NoSuchElementException{
         StringBuilder sb = new StringBuilder();
         Map.Entry<String, City> elem = collection.getCityMap().entrySet().stream().min(Comparator.comparing(x->x.getValue().getPopulation())).get();
         return sb.append("Key: ").append(elem.getKey()).append("\n").append("Value: ").append(elem.getValue().toString()).toString();

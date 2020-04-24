@@ -5,6 +5,7 @@ import exceptions.ConnectionCancelledException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -21,12 +22,18 @@ public class RequestHandler {
                 log.info("Получены данные от клиента "+channel.getRemoteAddress());
                 return TO;
             }
+            catch (StreamCorruptedException e){
+                SocketAddress clientAddr = channel.getRemoteAddress();
+                channel.close();
+                log.info("Разорвано соединение с клиентом "+clientAddr);
+                throw new ConnectionCancelledException("Соединение разорвано");
+            }
         }
         catch (IOException e){
             SocketAddress clientAddr = channel.getRemoteAddress();
             channel.close();
             log.info("Разорвано соединение с клиентом "+clientAddr);
-            throw new ConnectionCancelledException("Соединение принудительно разорвано");
+            throw new ConnectionCancelledException("Соединение разорвано");
         }
     }
 }

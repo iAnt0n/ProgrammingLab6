@@ -4,6 +4,7 @@ import communication.TransferObject;
 import exceptions.InvalidArgumentsException;
 import utils.UserInterface;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,9 +53,12 @@ public class CommandBuilder {
      * @param s строка, на основе которой строится объект
      * @return объект типа {@link TransferObject}
      */
-    public Object[] buildCommand(UserInterface ui, String s) {
+    public Object[] buildCommand(UserInterface ui, String s) throws IOException {
         String[] input = s.trim().split("\\s+");
         String[] simpleArgs = Arrays.copyOfRange(input, 1, input.length);
+        byte[] b = new byte[10];
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos.write(b);
         Command cmd = commands.get(input[0].toLowerCase());
         if (cmd.getSimpleArgLen() != simpleArgs.length){
             throw new InvalidArgumentsException("Неверные аргументы команды");

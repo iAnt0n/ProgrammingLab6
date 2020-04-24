@@ -1,6 +1,5 @@
 package commands;
 
-import communication.TransferObject;
 import exceptions.InvalidFieldException;
 import utils.UserInterface;
 

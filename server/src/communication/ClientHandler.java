@@ -22,7 +22,7 @@ public class ClientHandler {
         server.configureBlocking(false);
         this.selector = Selector.open();
         server.register(selector, SelectionKey.OP_ACCEPT);
-        log.info("Сервер запущен: IP "+ InetAddress.getLocalHost().getHostAddress() +" Port "+port+". Ожидание подключений");
+        log.info("Сервер запущен: IP "+ InetAddress.getLocalHost().getHostAddress() +" Port "+port);
     }
 
     public Selector getSelector() {

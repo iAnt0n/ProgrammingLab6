@@ -3,6 +3,8 @@ package commands;
 import collection.CollectionManager;
 import communication.TransferObject;
 
+import java.util.NoSuchElementException;
+
 /**
  * Класс, реализующий команду min_by_population
  */
@@ -15,6 +17,11 @@ public class MinByPopulationCommand extends Command {
 
     @Override
     public String execute(CollectionManager cm, TransferObject TO) {
-        return cm.minByPopulation();
+        try {
+            return cm.minByPopulation();
+        }
+        catch (NoSuchElementException e){
+            return "Коллекция пуста";
+        }
     }
 }

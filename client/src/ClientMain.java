@@ -12,12 +12,20 @@ public class ClientMain {
                                              new OutputStreamWriter(System.out), true);
         CommandBuilder cb = new CommandBuilder();
         Connector connector = null;
-        try {
-            connector = Connector.connect("localhost", 1984);
-            ui.writeln("Соединение установлено. Введите help для просмотра доступных команд");
+        if (args.length==2) {
+            try {
+                connector = Connector.connect(args[0], Integer.parseInt(args[1]));
+                ui.writeln("Соединение установлено. Введите help для просмотра доступных команд");
+            } catch (IOException e) {
+                ui.writeln("Не удалось подключиться к серверу. " + e.getMessage());
+                System.exit(1);
+            } catch (IllegalArgumentException e) {
+                ui.writeln("Неверные параметры запуска");
+                System.exit(1);
+            }
         }
-        catch (IOException e){
-            ui.writeln("Не удалось подключиться к серверу " + e.getMessage());
+        else{
+            ui.writeln("Usage: java -jar client17.jar <host> <port>");
             System.exit(1);
         }
 
